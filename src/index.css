@@ -1,0 +1,43 @@
+@import "@fontsource/playfair-display/400.css";
+@import "@fontsource/playfair-display/700.css";
+@import "@fontsource/lato/400.css";
+@import "@fontsource/lato/700.css";
+@import "@fontsource/mukta-malar/400.css";
+@import "@fontsource/mukta-malar/700.css";
+
+@import "tailwindcss";
+
+@theme {
+  --color-primary-maroon: #6B171F;
+  --color-primary-gold: #D4AF37;
+  --color-secondary-green: #4C7A34;
+  --color-secondary-brown: #3E2723;
+  --color-secondary-beige: #F5F1E7;
+
+  --font-serif: "Playfair Display", serif;
+  --font-sans: "Lato", sans-serif;
+  --font-tamil: "Mukta Malar", sans-serif;
+
+  --animate-float: float 3s ease-in-out infinite;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-secondary-beige text-secondary-brown font-sans;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
+
+.kolam-pattern {
+  background-image: url('/assets/kolam-bg.png');
+  background-repeat: repeat;
+  opacity: 0.1;
+  pointer-events: none;
+}
