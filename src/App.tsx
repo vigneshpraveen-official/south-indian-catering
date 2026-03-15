@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
-import { Menu, X, ChevronRight, Phone, Mail, MapPin, Instagram, Facebook, Clock } from 'lucide-react';
+import { Menu, X, ChevronRight, Phone, Mail, MapPin, Instagram, Facebook, Clock, Send } from 'lucide-react';
 
 // --- Types ---
 interface NavLinkProps {
@@ -21,24 +21,41 @@ interface ServiceCardProps {
 const NavLink: React.FC<NavLinkProps> = ({ href, label, onClick }) => (
   <a
     href={href}
-    onClick={onClick}
-    className="relative font-sans text-secondary-brown hover:text-primary-maroon transition-colors duration-300 group"
+    onClick={(e) => {
+      e.preventDefault();
+      const target = document.querySelector(href);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+        if (onClick) onClick();
+      }
+    }}
+    className="relative font-sans text-secondary-brown hover:text-primary-maroon transition-colors duration-300 group cursor-pointer"
   >
     {label}
     <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary-gold transition-all duration-300 group-hover:w-full" />
   </a>
 );
 
-const SectionHeading: React.FC<{ title: string; subtitle?: string; tamil?: string }> = ({ title, subtitle, tamil }) => (
+const SectionHeading: React.FC<{ title: string; subtitle?: string; tamil?: string; light?: boolean }> = ({ title, subtitle, tamil, light }) => (
   <motion.div
     initial={{ opacity: 0, y: 30 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
     className="text-center mb-16"
   >
-    {tamil && <p className="font-tamil text-primary-maroon mb-2 tracking-wide uppercase">{tamil}</p>}
-    <h2 className="text-4xl md:text-5xl font-bold text-secondary-brown mb-4">{title}</h2>
-    {subtitle && <p className="text-secondary-brown/70 max-w-2xl mx-auto italic">{subtitle}</p>}
+    {tamil && (
+      <p className={`font-tamil font-black text-xl md:text-2xl mb-4 tracking-wide uppercase ${light ? 'text-primary-gold' : 'text-primary-maroon'}`}>
+        {tamil}
+      </p>
+    )}
+    <h2 className={`text-4xl md:text-5xl font-bold mb-4 ${light ? 'text-white' : 'text-secondary-brown'}`}>
+      {title}
+    </h2>
+    {subtitle && (
+      <p className={`max-w-2xl mx-auto italic ${light ? 'text-white/70' : 'text-secondary-brown/70'}`}>
+        {subtitle}
+      </p>
+    )}
     <div className="w-24 h-1 bg-primary-gold mx-auto mt-6" />
   </motion.div>
 );
@@ -59,11 +76,11 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, image, de
     <h3 className="text-2xl font-bold text-primary-maroon mb-4">{title}</h3>
     <p className="text-secondary-brown/80 leading-relaxed">{description}</p>
     <motion.button 
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+      onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+      whileHover={{ x: 5 }}
       className="mt-6 flex items-center text-primary-gold font-bold group"
     >
-      Learn More <ChevronRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+      Inquire Now <ChevronRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
     </motion.button>
   </motion.div>
 );
@@ -80,14 +97,24 @@ const FloatingAsset: React.FC<{ src: string; className: string }> = ({ src, clas
 const App: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { scrollYProgress } = useScroll();
-  const opacity = useTransform(scrollYProgress, [0, 0.05], [1, 0.95]);
+  const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormStatus('submitting');
+    setTimeout(() => setFormStatus('success'), 1500);
+  };
+
+  const scrollToSection = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    setIsMobileMenuOpen(false);
+  };
 
   const services = [
     {
@@ -129,23 +156,25 @@ const App: React.FC = () => {
         }`}
       >
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-  <motion.div
+          <motion.div 
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 cursor-pointer"
           >
             <div className="w-10 h-10 bg-primary-maroon rounded-full flex items-center justify-center text-primary-gold font-serif text-2xl font-bold">V</div>
             <span className="text-2xl font-serif font-bold text-primary-maroon tracking-tighter uppercase">VP <span className="text-primary-gold">CATERING</span></span>
           </motion.div>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-10">
+          <div className="hidden lg:flex items-center gap-10">
             <NavLink href="#about" label="Heritage" />
             <NavLink href="#services" label="Services" />
             <NavLink href="#menu" label="The Feast" />
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => scrollToSection('contact')}
               className="bg-primary-maroon text-primary-gold px-8 py-2.5 rounded-full font-bold border border-primary-gold/30 hover:bg-primary-maroon/90 transition-all shadow-lg shadow-primary-maroon/20"
             >
               Book Now
@@ -153,7 +182,7 @@ const App: React.FC = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <button className="md:hidden text-primary-maroon" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+          <button className="lg:hidden text-primary-maroon" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
             {isMobileMenuOpen ? <X size={32} /> : <Menu size={32} />}
           </button>
         </div>
@@ -165,13 +194,18 @@ const App: React.FC = () => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="md:hidden bg-secondary-beige/95 border-b border-primary-gold/20 mt-4 overflow-hidden"
+              className="lg:hidden bg-secondary-beige/95 border-b border-primary-gold/20 mt-4 overflow-hidden"
             >
               <div className="flex flex-col gap-6 p-8">
                 <NavLink href="#about" label="Heritage" onClick={() => setIsMobileMenuOpen(false)} />
                 <NavLink href="#services" label="Services" onClick={() => setIsMobileMenuOpen(false)} />
                 <NavLink href="#menu" label="The Feast" onClick={() => setIsMobileMenuOpen(false)} />
-                <button className="bg-primary-maroon text-primary-gold px-8 py-3 rounded-xl font-bold">Book Event</button>
+                <button 
+                  onClick={() => scrollToSection('contact')}
+                  className="bg-primary-maroon text-primary-gold px-8 py-3 rounded-xl font-bold"
+                >
+                  Book Event
+                </button>
               </div>
             </motion.div>
           )}
@@ -180,7 +214,7 @@ const App: React.FC = () => {
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 px-6 md:px-12 overflow-hidden">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -189,7 +223,7 @@ const App: React.FC = () => {
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="font-tamil text-primary-maroon text-xl md:text-2xl mb-4"
+              className="font-tamil font-black text-primary-maroon text-xl md:text-2xl mb-4 tracking-wide"
             >
               பாரம்பரிய தென்னிந்திய உணவு விருந்து
             </motion.p>
@@ -202,12 +236,14 @@ const App: React.FC = () => {
             <div className="flex flex-wrap gap-4">
               <motion.button
                 whileHover={{ scale: 1.05 }}
+                onClick={() => scrollToSection('menu')}
                 className="bg-primary-maroon text-primary-gold px-10 py-4 rounded-full font-bold text-lg shadow-2xl shadow-primary-maroon/20"
               >
                 View Our Menus
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.05 }}
+                onClick={() => scrollToSection('about')}
                 className="bg-transparent border-2 border-primary-gold text-primary-maroon px-10 py-4 rounded-full font-bold text-lg"
               >
                 Our Story
@@ -225,8 +261,8 @@ const App: React.FC = () => {
               <img src="/assets/hero-thali.png" alt="South Indian Thali" className="w-full aspect-[4/5] object-cover" />
             </div>
             {/* Floating Assets */}
-            <FloatingAsset src="/assets/hero-leaf.png" className="absolute -bottom-12 -left-12 w-32 z-20 drop-shadow-2xl" />
-            <FloatingAsset src="/assets/brass-lamp.png" className="absolute -top-10 -right-10 w-40 z-20 drop-shadow-2xl" />
+            <FloatingAsset src="/assets/hero-leaf.png" className="absolute -top-20 -right-24 w-24 z-0 opacity-80 drop-shadow-lg" />
+            <FloatingAsset src="/assets/brass-lamp.png" className="absolute -bottom-20 -left-24 w-20 z-0 opacity-80 drop-shadow-lg" />
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] border border-primary-gold/10 rounded-full animate-pulse" />
           </motion.div>
         </div>
@@ -234,12 +270,12 @@ const App: React.FC = () => {
 
       {/* About Section */}
       <section id="about" className="py-24 px-6 md:px-12 bg-white/30 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-20 items-center">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="order-2 md:order-1 relative"
+            className="order-2 lg:order-1 relative"
           >
             <img src="/assets/about-kitchen.png" alt="Traditional Kitchen" className="rounded-3xl shadow-2xl w-full aspect-square object-cover" />
             <div className="absolute -bottom-8 -right-8 bg-primary-gold p-8 rounded-3xl shadow-xl max-w-[200px]">
@@ -252,10 +288,10 @@ const App: React.FC = () => {
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="order-1 md:order-2"
+            className="order-1 lg:order-2"
           >
-            <p className="font-tamil text-primary-maroon text-lg mb-4">எங்கள் கதை</p>
-            <h2 className="text-4xl md:text-5xl font-bold text-secondary-brown mb-8 leading-tight">Preserving Culinary <br/><span className="text-primary-maroon">Artistry Since 1995</span></h2>
+            <p className="font-tamil font-black text-primary-maroon text-xl mb-4">எங்கள் கதை</p>
+            <h2 className="text-4xl md:text-5xl font-bold text-secondary-brown mb-8 leading-tight">Preserving Culinary <br/><span className="text-primary-maroon italic">Artistry Since 1995</span></h2>
             <div className="space-y-6 text-lg text-secondary-brown/80 leading-relaxed">
               <p>Founded on the principles of authenticity and purity, VP Catering has been the custodian of traditional South Indian recipes passed down through generations.</p>
               <p>Every dish is crafted using hand-ground spices, locally sourced ingredients, and the slow-cooking techniques that define the soul of our heritage.</p>
@@ -292,11 +328,12 @@ const App: React.FC = () => {
         </div>
       </section>
 
-      {/* Menu Showcase - Circular Layout */}
+      {/* Menu Showcase */}
       <section id="menu" className="py-32 bg-secondary-brown text-secondary-beige relative overflow-hidden">
-        <div className="kolam-pattern absolute inset-0 opacity-5" />
+        <div className="kolam-pattern absolute inset-0 opacity-5 pointer-events-none" />
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <SectionHeading 
+            light
             tamil="சுவை மற்றும் மணம்"
             title="The Grand Thali Showcase"
             subtitle="Explore our signature creations presented in a traditional scattered thali style."
@@ -332,12 +369,14 @@ const App: React.FC = () => {
                 }}
                 transition={{ delay: idx * 0.1, duration: 0.8 }}
                 whileHover={{ scale: 1.1 }}
-                className="absolute z-30 flex flex-col items-center"
+                className="absolute z-30 flex flex-col items-center group cursor-pointer"
               >
                 <div className="w-24 md:w-40 h-24 md:h-40 rounded-full overflow-hidden border-4 border-primary-gold shadow-lg mb-4 bg-white">
-                  <img src={item.img} alt={item.name} className="w-full h-full object-cover" />
+                  <img src={item.img} alt={item.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                 </div>
-                <p className="text-primary-gold font-bold text-sm md:text-lg whitespace-nowrap bg-secondary-brown/80 px-4 py-1 rounded-full backdrop-blur-sm">{item.name}</p>
+                <div className="bg-secondary-brown/80 backdrop-blur-sm px-4 py-1 rounded-full shadow-lg group-hover:bg-primary-gold group-hover:text-primary-maroon transition-all">
+                  <p className="text-primary-gold font-bold text-sm md:text-lg whitespace-nowrap group-hover:text-inherit">{item.name}</p>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -345,13 +384,13 @@ const App: React.FC = () => {
       </section>
 
       {/* Contact Section */}
-      <section className="py-24 px-6 md:px-12 relative overflow-hidden">
+      <section id="contact" className="py-24 px-6 md:px-12 relative overflow-hidden bg-white">
         <div className="max-w-5xl mx-auto">
-          <div className="bg-white rounded-[3rem] shadow-2xl border border-primary-gold/10 overflow-hidden flex flex-col md:flex-row">
-            <div className="md:w-2/5 bg-primary-maroon p-12 text-primary-gold flex flex-col justify-between">
+          <div className="bg-secondary-beige/30 rounded-[3rem] shadow-2xl border border-primary-gold/10 overflow-hidden flex flex-col lg:flex-row">
+            <div className="lg:w-2/5 bg-primary-maroon p-12 text-primary-gold flex flex-col justify-between">
               <div>
-                <p className="font-tamil mb-4 opacity-80 uppercase tracking-widest">தொடர்பு கொள்ள</p>
-                <h2 className="text-4xl font-bold mb-8 font-serif leading-tight">Start Your <br/>Grand Feast</h2>
+                <p className="font-tamil font-black text-2xl mb-4 opacity-80 uppercase tracking-widest">தொடர்பு கொள்ள</p>
+                <h2 className="text-4xl font-bold mb-8 font-serif leading-tight text-white">Start Your <br/>Grand Feast</h2>
                 <div className="space-y-8 mt-12">
                   <div className="flex items-center gap-6">
                     <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center"><Phone size={24} /></div>
@@ -378,48 +417,65 @@ const App: React.FC = () => {
               </div>
               
               <div className="flex gap-4 mt-12">
-                <motion.a whileHover={{ scale: 1.1 }} className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center border border-white/20"><Instagram size={18} /></motion.a>
-                <motion.a whileHover={{ scale: 1.1 }} className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center border border-white/20"><Facebook size={18} /></motion.a>
+                <motion.a whileHover={{ scale: 1.1 }} className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center border border-white/20 cursor-pointer"><Instagram size={18} /></motion.a>
+                <motion.a whileHover={{ scale: 1.1 }} className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center border border-white/20 cursor-pointer"><Facebook size={18} /></motion.a>
               </div>
             </div>
 
-            <div className="md:w-3/5 p-12 bg-white">
-              <form className="space-y-6">
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-secondary-brown/60 uppercase tracking-widest">Your Name</label>
-                    <input type="text" className="w-full bg-secondary-beige/50 border-2 border-transparent focus:border-primary-gold focus:bg-white outline-none p-4 rounded-xl transition-all" placeholder="Enter Name" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-secondary-brown/60 uppercase tracking-widest">Phone</label>
-                    <input type="tel" className="w-full bg-secondary-beige/50 border-2 border-transparent focus:border-primary-gold focus:bg-white outline-none p-4 rounded-xl transition-all" placeholder="Enter Number" />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-secondary-brown/60 uppercase tracking-widest">Event Type</label>
-                  <select className="w-full bg-secondary-beige/50 border-2 border-transparent focus:border-primary-gold focus:bg-white outline-none p-4 rounded-xl transition-all">
-                    <option>Wedding Celebration</option>
-                    <option>Corporate Gala</option>
-                    <option>House Warming</option>
-                    <option>Private Party</option>
-                  </select>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-secondary-brown/60 uppercase tracking-widest">Estimated Guests</label>
-                  <input type="number" className="w-full bg-secondary-beige/50 border-2 border-transparent focus:border-primary-gold focus:bg-white outline-none p-4 rounded-xl transition-all" placeholder="e.g. 500" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-secondary-brown/60 uppercase tracking-widest">Your Message</label>
-                  <textarea rows={4} className="w-full bg-secondary-beige/50 border-2 border-transparent focus:border-primary-gold focus:bg-white outline-none p-4 rounded-xl transition-all resize-none" placeholder="Tell us about your requirements..." />
-                </div>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full bg-primary-gold text-primary-maroon font-bold text-lg py-5 rounded-2xl shadow-xl shadow-primary-gold/20"
-                >
-                  Send Inquiry
-                </motion.button>
-              </form>
+            <div className="lg:w-3/5 p-12 bg-white relative">
+              <AnimatePresence mode="wait">
+                {formStatus === 'success' ? (
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="h-full flex flex-col items-center justify-center text-center space-y-4"
+                  >
+                    <Send size={48} className="text-secondary-green mb-4" />
+                    <h3 className="text-3xl font-bold text-primary-maroon">Namaskaram!</h3>
+                    <p className="text-lg text-secondary-brown/70">Your inquiry has been sent. We'll contact you soon.</p>
+                    <button onClick={() => setFormStatus('idle')} className="text-primary-gold font-bold underline">Send another</button>
+                  </motion.div>
+                ) : (
+                  <form onSubmit={handleFormSubmit} className="space-y-6">
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-secondary-brown/60 uppercase tracking-widest">Your Name <span className="text-red-500">*</span></label>
+                        <input required type="text" className="w-full bg-secondary-beige/50 border-2 border-transparent focus:border-primary-gold focus:bg-white outline-none p-4 rounded-xl transition-all" placeholder="Enter Name" />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-secondary-brown/60 uppercase tracking-widest">Phone <span className="text-red-500">*</span></label>
+                        <input required type="tel" className="w-full bg-secondary-beige/50 border-2 border-transparent focus:border-primary-gold focus:bg-white outline-none p-4 rounded-xl transition-all" placeholder="Enter Number" />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-secondary-brown/60 uppercase tracking-widest">Event Type <span className="text-red-500">*</span></label>
+                      <select required className="w-full bg-secondary-beige/50 border-2 border-transparent focus:border-primary-gold focus:bg-white outline-none p-4 rounded-xl transition-all cursor-pointer">
+                        <option value="">Select Event</option>
+                        <option>Wedding Celebration</option>
+                        <option>Corporate Gala</option>
+                        <option>House Warming</option>
+                        <option>Private Party</option>
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-secondary-brown/60 uppercase tracking-widest">Estimated Guests <span className="text-red-500">*</span></label>
+                      <input required type="number" className="w-full bg-secondary-beige/50 border-2 border-transparent focus:border-primary-gold focus:bg-white outline-none p-4 rounded-xl transition-all" placeholder="e.g. 500" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-secondary-brown/60 uppercase tracking-widest">Your Message</label>
+                      <textarea rows={4} className="w-full bg-secondary-beige/50 border-2 border-transparent focus:border-primary-gold focus:bg-white outline-none p-4 rounded-xl transition-all resize-none" placeholder="Tell us about your requirements..." />
+                    </div>
+                    <motion.button
+                      disabled={formStatus === 'submitting'}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="w-full bg-primary-gold text-primary-maroon font-bold text-lg py-5 rounded-2xl shadow-xl shadow-primary-gold/20"
+                    >
+                      {formStatus === 'submitting' ? 'Processing...' : 'Send Inquiry'}
+                    </motion.button>
+                  </form>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </div>
@@ -428,11 +484,11 @@ const App: React.FC = () => {
       {/* Footer */}
       <footer className="bg-primary-maroon pt-20 pb-10 px-6 md:px-12 text-primary-gold relative overflow-hidden">
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="grid md:grid-cols-4 gap-12 mb-20">
-            <div className="col-span-2">
+          <div className="grid lg:grid-cols-4 gap-12 mb-20">
+            <div className="lg:col-span-2">
               <div className="flex items-center gap-3 mb-8">
                 <div className="w-12 h-12 bg-primary-gold text-primary-maroon rounded-full flex items-center justify-center font-serif text-3xl font-bold">V</div>
-                <span className="text-3xl font-serif font-bold tracking-tighter">VP <span className="text-white">CATERING</span></span>
+                <span className="text-3xl font-serif font-bold tracking-tighter uppercase text-white">VP <span className="text-primary-gold">CATERING</span></span>
               </div>
               <p className="text-lg text-white/70 max-w-md leading-relaxed">
                 Weaving stories through flavors since 1995. Our mission is to preserve and celebrate the rich culinary traditions of South India for generations to come.
@@ -441,10 +497,10 @@ const App: React.FC = () => {
             <div>
               <h4 className="text-white font-bold mb-8 uppercase tracking-[0.2em] text-sm">Quick Links</h4>
               <ul className="space-y-4 font-sans opacity-80">
-                <li><a href="#" className="hover:text-white transition-colors">Our Heritage</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Curated Menus</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Photo Gallery</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact Support</a></li>
+                <li><button onClick={() => scrollToSection('about')} className="hover:text-white transition-colors">Our Heritage</button></li>
+                <li><button onClick={() => scrollToSection('menu')} className="hover:text-white transition-colors">Curated Menus</button></li>
+                <li><button onClick={() => scrollToSection('services')} className="hover:text-white transition-colors">Our Services</button></li>
+                <li><button onClick={() => scrollToSection('contact')} className="hover:text-white transition-colors">Contact Us</button></li>
               </ul>
             </div>
             <div>
@@ -457,7 +513,7 @@ const App: React.FC = () => {
             </div>
           </div>
           
-          <div className="border-t border-white/10 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 opacity-60 text-sm">
+          <div className="border-t border-white/10 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 opacity-60 text-sm font-bold">
             <p>© 2026 VP Catering Services. Crafted with Tradition in Chennai.</p>
             <div className="flex gap-8">
               <a href="#">Privacy Policy</a>

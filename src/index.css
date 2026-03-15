@@ -1,9 +1,11 @@
 @import "@fontsource/playfair-display/400.css";
 @import "@fontsource/playfair-display/700.css";
+@import "@fontsource/playfair-display/900.css";
 @import "@fontsource/lato/400.css";
 @import "@fontsource/lato/700.css";
 @import "@fontsource/mukta-malar/400.css";
 @import "@fontsource/mukta-malar/700.css";
+@import "@fontsource/mukta-malar/800.css";
 
 @import "tailwindcss";
 
@@ -27,8 +29,11 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
   body {
-    @apply bg-secondary-beige text-secondary-brown font-sans;
+    @apply bg-secondary-beige text-secondary-brown font-sans antialiased;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-serif;
@@ -40,4 +45,13 @@
   background-repeat: repeat;
   opacity: 0.1;
   pointer-events: none;
+}
+
+/* Custom Dropdown Styling */
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B171F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1.5em;
 }
