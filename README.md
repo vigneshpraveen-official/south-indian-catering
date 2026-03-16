@@ -23,12 +23,11 @@ The interface is built on a "Traditional Modernism" aesthetic—capturing the wa
 
 ## Visual Showcase
 
-*Screenshots will be populated as assets are generated.*
-
 | Section | Preview |
 | :--- | :--- |
 | **Hero** | ![Hero](./public/screenshots/hero.png) |
 | **About** | ![About](./public/screenshots/about.png) |
+| **Services** | ![Service](./public/screenshots/service.png) |
 | **Menu Showcase** | ![Menu](./public/screenshots/menu.png) |
 | **Contact Form** | ![Contact](./public/screenshots/contact.png) |
 
