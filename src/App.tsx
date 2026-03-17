@@ -162,8 +162,8 @@ const App: React.FC = () => {
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-2 cursor-pointer"
           >
-            <div className="w-10 h-10 bg-primary-maroon rounded-full flex items-center justify-center text-primary-gold font-serif text-2xl font-bold">V</div>
-            <span className="text-2xl font-serif font-bold text-primary-maroon tracking-tighter uppercase">VP <span className="text-primary-gold">CATERING</span></span>
+            <img src="/logo.png" alt="Dreams Catering" className="w-10 h-10 object-contain rounded-full bg-primary-maroon" />
+            <span className="text-2xl font-serif font-bold text-primary-maroon tracking-tighter uppercase">DREAMS <span className="text-primary-gold">CATERING</span></span>
           </motion.div>
 
           {/* Desktop Nav */}
@@ -293,7 +293,7 @@ const App: React.FC = () => {
             <p className="font-tamil font-black text-primary-maroon text-xl mb-4">எங்கள் கதை</p>
             <h2 className="text-4xl md:text-5xl font-bold text-secondary-brown mb-8 leading-tight">Preserving Culinary <br/><span className="text-primary-maroon italic">Artistry Since 1995</span></h2>
             <div className="space-y-6 text-lg text-secondary-brown/80 leading-relaxed">
-              <p>Founded on the principles of authenticity and purity, VP Catering has been the custodian of traditional South Indian recipes passed down through generations.</p>
+              <p>Founded on the principles of authenticity and purity, Dreams Catering has been the custodian of traditional South Indian recipes passed down through generations.</p>
               <p>Every dish is crafted using hand-ground spices, locally sourced ingredients, and the slow-cooking techniques that define the soul of our heritage.</p>
             </div>
             <motion.div className="grid grid-cols-2 gap-8 mt-12">
@@ -403,7 +403,7 @@ const App: React.FC = () => {
                     <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center"><Mail size={24} /></div>
                     <div>
                       <p className="text-sm opacity-60 font-bold uppercase tracking-widest">Email</p>
-                      <p className="text-xl font-bold">hello@vpcatering.in</p>
+                      <p className="text-xl font-bold">hello@dreamscatering.in</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-6">
@@ -417,8 +417,8 @@ const App: React.FC = () => {
               </div>
               
               <div className="flex gap-4 mt-12">
-                <motion.a whileHover={{ scale: 1.1 }} className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center border border-white/20 cursor-pointer"><Instagram size={18} /></motion.a>
-                <motion.a whileHover={{ scale: 1.1 }} className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center border border-white/20 cursor-pointer"><Facebook size={18} /></motion.a>
+                <motion.a href="https://www.instagram.com/dreams_cateringg" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.1 }} className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center border border-white/20 cursor-pointer"><Instagram size={18} /></motion.a>
+                <motion.a href="https://www.facebook.com/dreamscatering" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.1 }} className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center border border-white/20 cursor-pointer"><Facebook size={18} /></motion.a>
               </div>
             </div>
 
@@ -487,8 +487,8 @@ const App: React.FC = () => {
           <div className="grid lg:grid-cols-4 gap-12 mb-20">
             <div className="lg:col-span-2">
               <div className="flex items-center gap-3 mb-8">
-                <div className="w-12 h-12 bg-primary-gold text-primary-maroon rounded-full flex items-center justify-center font-serif text-3xl font-bold">V</div>
-                <span className="text-3xl font-serif font-bold tracking-tighter uppercase text-white">VP <span className="text-primary-gold">CATERING</span></span>
+                <img src="/logo.png" alt="Dreams Catering" className="w-12 h-12 object-contain rounded-full bg-primary-gold p-1" />
+                <span className="text-3xl font-serif font-bold tracking-tighter uppercase text-white">DREAMS <span className="text-primary-gold">CATERING</span></span>
               </div>
               <p className="text-lg text-white/70 max-w-md leading-relaxed">
                 Weaving stories through flavors since 1995. Our mission is to preserve and celebrate the rich culinary traditions of South India for generations to come.
@@ -514,7 +514,7 @@ const App: React.FC = () => {
           </div>
           
           <div className="border-t border-white/10 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 opacity-60 text-sm font-bold">
-            <p>© 2026 VP Catering Services. Crafted with Tradition in Chennai.</p>
+            <p>© 2026 Dreams Catering Services. Crafted with Tradition in Chennai.</p>
             <div className="flex gap-8">
               <a href="#">Privacy Policy</a>
               <a href="#">Terms of Service</a>

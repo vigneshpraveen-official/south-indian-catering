@@ -1,4 +1,4 @@
-# VP Catering — Premium South Indian Heritage
+# Dreams Catering — Premium South Indian Heritage
 
 A production-ready, highly engaging landing page for a premium South Indian catering service. This project blends traditional heritage aesthetics with modern frontend elegance, featuring fluid animations and a rich, cultural design system.
 
@@ -23,15 +23,16 @@ The interface is built on a "Traditional Modernism" aesthetic—capturing the wa
 
 ## Visual Showcase
 
+*Screenshots will be populated as assets are generated.*
+
 | Section | Preview |
 | :--- | :--- |
 | **Hero** | ![Hero](./public/screenshots/hero.png) |
 | **About** | ![About](./public/screenshots/about.png) |
-| **Services** | ![Service](./public/screenshots/service.png) |
 | **Menu Showcase** | ![Menu](./public/screenshots/menu.png) |
 | **Contact Form** | ![Contact](./public/screenshots/contact.png) |
 
-## Installation & Setup
+## 🛠️ Installation & Setup
 
 1.  **Clone the Repository:**
     ```bash
@@ -49,11 +50,10 @@ The interface is built on a "Traditional Modernism" aesthetic—capturing the wa
     npm run dev
     ```
 
-## The Essence of VP Catering
+## The Essence of Dreams Catering
 
 Every line of code and every design choice in this project is dedicated to one goal: honoring the heritage of South Indian hospitality. From the golden hues of our palette to the rhythmic motion of our transitions, we invite you to experience a digital feast as rich as our history.
 
 ---
 
 Crafted with precision and a passion for South Indian Culinary Arts.
-
